@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Parcia1.Models.Usuario>
+@{
+	ViewData["Title"] = "Usuarios";
+}
+
+<h1>Listado de Usuarios</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear Nuevo Usuario</a>
+</p>
+
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Nombre)</th>
+            <th>Rol</th>
+            <th>@Html.DisplayNameFor(model => model.correo)</th>
+            <th>@Html.DisplayNameFor(model => model.Telefono)</th>
+            <th>@Html.DisplayNameFor(model => model.Direccion)</th>
+            <th>Fecha Registro</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RolUsuario.Rol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.correo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direccion)
+                </td>
+                <td>
+                    @item.FechaRegistro.ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-warning">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-info">Detalles</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UsuarioId" class="btn btn-sm btn-danger">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

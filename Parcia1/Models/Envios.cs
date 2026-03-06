@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,15 +10,14 @@ namespace Parcia1.Models
         [Key]
         public int Id { get; set; }
 
+        public int? UsuarioId { get; set; }
+
+        [ForeignKey("UsuarioId")]
+
+        public Usuario Usuario { get; set; }
+
         [Required]
-        public int ClienteId { get; set; }
-
-        [ForeignKey("ClienteId")]
-
-        public Clientes Clientes { get; set; }
-
-        [Required]
-        public int DestinatarioId { get; set; }
+        public int DestinatariosId { get; set; }
 
         [ForeignKey("DestinatariosId")]
 
@@ -38,6 +38,13 @@ namespace Parcia1.Models
         [Required]
         [Column(TypeName = "decimal(10,2)")]
         public decimal Costo { get; set; }
+
+        [Required]
+        public int RolUsuarioId { get; set; }
+        
+        [ForeignKey("RolUsuarioId")]
+        public RolUsuario RolUsuario { get; set; }
+
 
     }
 }

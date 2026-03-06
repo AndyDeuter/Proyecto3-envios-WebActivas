@@ -5,7 +5,7 @@ namespace Parcia1.Models
     public class Destinatarios
     {
         [Key]
-        public int DestinatarioId { get; set; }
+        public int DestinatariosId { get; set; }
 
         [Required]
         [StringLength(200)]

@@ -6,33 +6,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Parcia1.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class InicialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Clientes",
-                columns: table => new
-                {
-                    ClienteId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clientes", x => x.ClienteId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Destinatarios",
                 columns: table => new
                 {
-                    DestinatarioId = table.Column<int>(type: "int", nullable: false)
+                    DestinatariosId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -42,7 +25,7 @@ namespace Parcia1.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Destinatarios", x => x.DestinatarioId);
+                    table.PrimaryKey("PK_Destinatarios", x => x.DestinatariosId);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,41 +43,106 @@ namespace Parcia1.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RolUsuario",
+                columns: table => new
+                {
+                    RolUsuarioId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Rol = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolUsuario", x => x.RolUsuarioId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Auditorias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RolId = table.Column<int>(type: "int", nullable: false),
+                    RolUsuarioId = table.Column<int>(type: "int", nullable: false),
+                    Accion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaAccion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Detalles = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Auditorias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Auditorias_RolUsuario_RolUsuarioId",
+                        column: x => x.RolUsuarioId,
+                        principalTable: "RolUsuario",
+                        principalColumn: "RolUsuarioId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Usuario",
+                columns: table => new
+                {
+                    UsuarioId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    RolUsuarioId = table.Column<int>(type: "int", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Usuario", x => x.UsuarioId);
+                    table.ForeignKey(
+                        name: "FK_Usuario_RolUsuario_RolUsuarioId",
+                        column: x => x.RolUsuarioId,
+                        principalTable: "RolUsuario",
+                        principalColumn: "RolUsuarioId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Envio",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClienteId = table.Column<int>(type: "int", nullable: false),
-                    DestinatarioId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: true),
                     DestinatariosId = table.Column<int>(type: "int", nullable: false),
                     EstadoId = table.Column<int>(type: "int", nullable: false),
                     FechaEnvio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Costo = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    RolUsuarioId = table.Column<int>(type: "int", nullable: false),
                     PaquetesId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Envio", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Envio_Clientes_ClienteId",
-                        column: x => x.ClienteId,
-                        principalTable: "Clientes",
-                        principalColumn: "ClienteId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Envio_Destinatarios_DestinatariosId",
                         column: x => x.DestinatariosId,
                         principalTable: "Destinatarios",
-                        principalColumn: "DestinatarioId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "DestinatariosId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Envio_EstadosEnvio_EstadoId",
                         column: x => x.EstadoId,
                         principalTable: "EstadosEnvio",
                         principalColumn: "EstadoId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Envio_RolUsuario_RolUsuarioId",
+                        column: x => x.RolUsuarioId,
+                        principalTable: "RolUsuario",
+                        principalColumn: "RolUsuarioId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Envio_Usuario_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuario",
+                        principalColumn: "UsuarioId");
                 });
 
             migrationBuilder.CreateTable(
@@ -118,9 +166,9 @@ namespace Parcia1.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Envio_ClienteId",
-                table: "Envio",
-                column: "ClienteId");
+                name: "IX_Auditorias_RolUsuarioId",
+                table: "Auditorias",
+                column: "RolUsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Envio_DestinatariosId",
@@ -138,9 +186,24 @@ namespace Parcia1.Migrations
                 column: "PaquetesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Envio_RolUsuarioId",
+                table: "Envio",
+                column: "RolUsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Envio_UsuarioId",
+                table: "Envio",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Paquetes_EnvioId",
                 table: "Paquetes",
                 column: "EnvioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuario_RolUsuarioId",
+                table: "Usuario",
+                column: "RolUsuarioId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Envio_Paquetes_PaquetesId",
@@ -154,8 +217,12 @@ namespace Parcia1.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Envio_Clientes_ClienteId",
+                name: "FK_Envio_RolUsuario_RolUsuarioId",
                 table: "Envio");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Usuario_RolUsuario_RolUsuarioId",
+                table: "Usuario");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Envio_Destinatarios_DestinatariosId",
@@ -170,7 +237,10 @@ namespace Parcia1.Migrations
                 table: "Envio");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Auditorias");
+
+            migrationBuilder.DropTable(
+                name: "RolUsuario");
 
             migrationBuilder.DropTable(
                 name: "Destinatarios");
@@ -183,6 +253,9 @@ namespace Parcia1.Migrations
 
             migrationBuilder.DropTable(
                 name: "Envio");
+
+            migrationBuilder.DropTable(
+                name: "Usuario");
         }
     }
 }

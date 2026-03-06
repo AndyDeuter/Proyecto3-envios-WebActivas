@@ -144,3 +144,4 @@ C:\Users\Anderson\Documents\proyectos web activas\AppEnvios\Parcia1\obj\Debug\ne
 C:\Users\Anderson\Documents\proyectos web activas\AppEnvios\Parcia1\obj\Debug\net8.0\Parcia1.pdb
 C:\Users\Anderson\Documents\proyectos web activas\AppEnvios\Parcia1\obj\Debug\net8.0\Parcia1.genruntimeconfig.cache
 C:\Users\Anderson\Documents\proyectos web activas\AppEnvios\Parcia1\obj\Debug\net8.0\ref\Parcia1.dll
+C:\Users\Anderson\Documents\proyectos web activas\AppEnvios\Parcia1\obj\Debug\net8.0\Parcia1.sourcelink.json

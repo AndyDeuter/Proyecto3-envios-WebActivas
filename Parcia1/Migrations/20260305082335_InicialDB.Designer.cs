@@ -12,8 +12,8 @@ using Parcia1.Data;
 namespace Parcia1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260219182024_Inicial")]
-    partial class Inicial
+    [Migration("20260305082335_InicialDB")]
+    partial class InicialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,46 +25,45 @@ namespace Parcia1.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Parcia1.Models.Clientes", b =>
+            modelBuilder.Entity("Parcia1.Models.Auditorias", b =>
                 {
-                    b.Property<int>("ClienteId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClienteId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Direccion")
+                    b.Property<string>("Accion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FechaRegistro")
+                    b.Property<string>("Detalles")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaAccion")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    b.Property<int>("RolId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RolUsuarioId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("correo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.HasKey("ClienteId");
+                    b.HasIndex("RolUsuarioId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Auditorias");
                 });
 
             modelBuilder.Entity("Parcia1.Models.Destinatarios", b =>
                 {
-                    b.Property<int>("DestinatarioId")
+                    b.Property<int>("DestinatariosId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DestinatarioId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DestinatariosId"));
 
                     b.Property<string>("Ciudad")
                         .IsRequired()
@@ -87,7 +86,7 @@ namespace Parcia1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("DestinatarioId");
+                    b.HasKey("DestinatariosId");
 
                     b.ToTable("Destinatarios");
                 });
@@ -100,14 +99,8 @@ namespace Parcia1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Costo")
                         .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("DestinatarioId")
-                        .HasColumnType("int");
 
                     b.Property<int>("DestinatariosId")
                         .HasColumnType("int");
@@ -124,15 +117,23 @@ namespace Parcia1.Migrations
                     b.Property<int?>("PaquetesId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("RolUsuarioId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ClienteId");
+                    b.Property<int?>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("DestinatariosId");
 
                     b.HasIndex("EstadoId");
 
                     b.HasIndex("PaquetesId");
+
+                    b.HasIndex("RolUsuarioId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Envio");
                 });
@@ -179,18 +180,78 @@ namespace Parcia1.Migrations
                     b.ToTable("Paquetes");
                 });
 
-            modelBuilder.Entity("Parcia1.Models.Envios", b =>
+            modelBuilder.Entity("Parcia1.Models.RolUsuario", b =>
                 {
-                    b.HasOne("Parcia1.Models.Clientes", "Clientes")
-                        .WithMany("Envio")
-                        .HasForeignKey("ClienteId")
+                    b.Property<int>("RolUsuarioId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RolUsuarioId"));
+
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RolUsuarioId");
+
+                    b.ToTable("RolUsuario");
+                });
+
+            modelBuilder.Entity("Parcia1.Models.Usuario", b =>
+                {
+                    b.Property<int>("UsuarioId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UsuarioId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("RolUsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("correo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UsuarioId");
+
+                    b.HasIndex("RolUsuarioId");
+
+                    b.ToTable("Usuario");
+                });
+
+            modelBuilder.Entity("Parcia1.Models.Auditorias", b =>
+                {
+                    b.HasOne("Parcia1.Models.RolUsuario", "RolUsuario")
+                        .WithMany()
+                        .HasForeignKey("RolUsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("RolUsuario");
+                });
+
+            modelBuilder.Entity("Parcia1.Models.Envios", b =>
+                {
                     b.HasOne("Parcia1.Models.Destinatarios", "Destinatarios")
                         .WithMany("Envio")
                         .HasForeignKey("DestinatariosId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Parcia1.Models.EstadosEnvio", "EstadosEnvio")
@@ -203,11 +264,23 @@ namespace Parcia1.Migrations
                         .WithMany("Envio")
                         .HasForeignKey("PaquetesId");
 
-                    b.Navigation("Clientes");
+                    b.HasOne("Parcia1.Models.RolUsuario", "RolUsuario")
+                        .WithMany()
+                        .HasForeignKey("RolUsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Parcia1.Models.Usuario", "Usuario")
+                        .WithMany("Envio")
+                        .HasForeignKey("UsuarioId");
 
                     b.Navigation("Destinatarios");
 
                     b.Navigation("EstadosEnvio");
+
+                    b.Navigation("RolUsuario");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Parcia1.Models.Paquetes", b =>
@@ -221,9 +294,15 @@ namespace Parcia1.Migrations
                     b.Navigation("Envios");
                 });
 
-            modelBuilder.Entity("Parcia1.Models.Clientes", b =>
+            modelBuilder.Entity("Parcia1.Models.Usuario", b =>
                 {
-                    b.Navigation("Envio");
+                    b.HasOne("Parcia1.Models.RolUsuario", "RolUsuario")
+                        .WithMany()
+                        .HasForeignKey("RolUsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RolUsuario");
                 });
 
             modelBuilder.Entity("Parcia1.Models.Destinatarios", b =>
@@ -237,6 +316,11 @@ namespace Parcia1.Migrations
                 });
 
             modelBuilder.Entity("Parcia1.Models.Paquetes", b =>
+                {
+                    b.Navigation("Envio");
+                });
+
+            modelBuilder.Entity("Parcia1.Models.Usuario", b =>
                 {
                     b.Navigation("Envio");
                 });
